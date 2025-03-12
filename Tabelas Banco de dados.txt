@@ -1,0 +1,38 @@
+ -- (Tabela de cadastro do cliente)
+CREATE TABLE Cadastro (
+    CPF CHAR(11) PRIMARY KEY,  -- sem pontos e tracos
+    Nome VARCHAR(100),
+    Sobrenome VARCHAR(100),
+    DataNascimento DATE,
+    Idade INT
+);
+-- ( Tabela de cobranca ) 
+CREATE TABLE Cobrança (
+    id_cobranca INT PRIMARY KEY AUTO_INCREMENT,  -- Uma chave primária única para cada cobrança
+    valor_mensalidade DECIMAL(10, 2),  -- Valor da mensalidade (formato para valores monetários)
+    valor_desconto DECIMAL(10, 2),     -- Valor do desconto (formato para valores monetários)
+    data_vencimento DATE,              -- Data de vencimento da cobrança
+    tempo_fidelidade INT,              -- Tempo de fidelidade, em meses ou anos, dependendo da definição
+    CPF CHAR(11),                      -- A foreign key que se relaciona com a tabela Cadastro
+    FOREIGN KEY (CPF) REFERENCES Cadastro(CPF)  -- Foreign key que referencia a chave primária de Cadastro
+);
+-- ( Tabela contato ) 
+CREATE TABLE Contato (
+    id_contato INT PRIMARY KEY AUTO_INCREMENT,  -- Identificador único para cada contato
+    telefone VARCHAR(15),  -- Para armazenar o telefone
+    endereco VARCHAR(255),  -- Endereço completo 
+    email VARCHAR(100),  -- E-mail do cliente
+    CPF CHAR(11),  -- Chave estrangeira que referencia o cliente da tabela Cadastro
+    FOREIGN KEY (CPF) REFERENCES Cadastro(CPF)  -- A foreign key que faz referência ao CPF do cliente
+);
+-- ( Agendamento ) 
+CREATE TABLE Agendamento (
+    id_agendamento INT PRIMARY KEY AUTO_INCREMENT,  -- Identificador único para cada agendamento
+    CPF CHAR(11),  -- Referência para o cliente (chave estrangeira)
+    data_agendamento DATETIME,  -- Data e hora do agendamento
+    descricao VARCHAR(255),  -- Descrição do agendamento (opcional)
+    FOREIGN KEY (CPF) REFERENCES Cadastro(CPF)  -- Chave estrangeira que faz referência à tabela Cadastro
+);
+-- ( Agendamento unico )
+ALTER TABLE Agendamento
+ADD CONSTRAINT unique_agendamento UNIQUE (CPF, data_agendamento);
