@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFC371, #FF5F6D); /* Fundo com gradiente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #8B4513;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 80%; /* Aumenta a largura do container */
+            text-align: center;
+        }
+        h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .grupo-formulario {
+            margin-bottom: 20px;
+        }
+        .grupo-formulario label {
+            display: block;
+            color: #fff;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .grupo-formulario input {
+            width: 90%; /* Diminui a largura das barras de entrada */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .grupo-formulario button {
+            width: 90%; /* Mantém o botão da mesma largura das barras de entrada */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4B3B0A;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .grupo-formulario button:hover {
+            background-color: #6B4F1A;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <div class="grupo-formulario">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" placeholder="Digite seu email">
+        </div>
+        <div class="grupo-formulario">
+            <label for="login-senha">Senha:</label>
+            <input type="password" id="login-senha" placeholder="Digite sua senha">
+        </div>
+        <div class="grupo-formulario">
+            <button type="button" onclick="redirecionarInicio()">Entrar</button>
+        </div>
+    </div>
+
+    <script>
+        function redirecionarInicio() {
+            const confirmacao = confirm("Se a senha estiver certa, prometemos não contar a ninguém! Deseja entrar?");
+            if (confirmacao) {
+                window.location.href = "inicio.html";
+            }
+        }
+    </script>
+</body>
+</html>

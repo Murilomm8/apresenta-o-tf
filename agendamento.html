@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamento de Aulas</title>
+    <link href='https://unpkg.com/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFC371, #FF5F6D); /* Fundo com gradiente */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .navbar {
+            width: 100%;
+            background-color: #8B4513;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #FFF;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #6B3B08;
+        }
+        .container {
+            background-color: #8B4513; /* Cor de fundo marrom */
+            padding: 30px; /* Aumenta o padding para mais espaço */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            width: 90%; /* Aumenta a largura do container */
+            margin: 20px auto;
+            text-align: center; /* Centraliza o texto */
+        }
+        h1 {
+            color: #FFF; /* Texto branco */
+            margin-bottom: 20px;
+        }
+        label {
+            color: #FFF; /* Texto branco */
+            display: block;
+            margin-bottom: 5px;
+            text-align: left; /* Alinha o texto à esquerda */
+        }
+        input[type="date"],
+        select {
+            width: 90%; /* Diminui a largura dos campos de entrada */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            width: 90%; /* Mantém o botão da mesma largura dos campos de entrada */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4B3B0A;
+            color: #FFF;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #6B4F1A;
+        }
+        #calendar {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .aulas-agendadas {
+            color: black; 
+        }
+        .aula-item {
+            background-color: #FFE4B5; /* Cor de fundo mais clara */
+            border: 1px solid #8B4513; /* Borda marrom */
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left; /* Alinha o texto à esquerda */
+        }
+        .aula-item button {
+            background-color: #4B3B0A;
+            color: #FFF;
+            margin-left: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .aula-item button:hover {
+            background-color: #6B4F1A;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="inicio.html">Início</a>
+        <a href="cadastro.html">Cadastro de Aluno</a>
+        <a href="agendamento.html">Agendamento de Aulas</a>
+        <a href="mensalidade.html">Gestão de Mensalidades</a>
+    </div>
+    <div class="container">
+        <h1>Agendamento de Aulas</h1>
+        <form id="agendamento-aula">
+            <label for="aluno">Aluno:</label>
+            <select id="aluno" name="aluno" required>
+                <option value="">Selecione um aluno</option>
+            </select>
+            <label for="data">Data:</label> <!-- Adiciona o campo de data -->
+            <input type="date" id="data" name="data" required>
+            <button type="submit">Agendar</button>
+        </form>
+        <div id="calendar"></div>
+        <div class="aulas-agendadas" id="aulas-agendadas">
+            <h2>Aulas Agendadas</h2>
+            <!-- Aulas agendadas serão listadas aqui -->
+        </div>
+    </div>
+
+    <script src='https://unpkg.com/fullcalendar@5.11.3/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alunoSelect = document.getElementById('aluno');
+            const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+            let editIndex = -1;
+
+            alunos.forEach(aluno => {
+                const option = document.createElement('option');
+                option.value = aluno.nome;
+                option.textContent = aluno.nome;
+                alunoSelect.appendChild(option);
+            });
+
+            const agendamentoAulaForm = document.getElementById('agendamento-aula');
+            const aulasAgendadasDiv = document.getElementById('aulas-agendadas');
+            const calendarEl = document.getElementById('calendar');
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                selectable: true,
+                select: function(info) {
+                    const data = info.startStr;
+                    document.getElementById('data').value = data;
+                },
+                events: JSON.parse(localStorage.getItem('aulasAgendadas')) || []
+            });
+
+            agendamentoAulaForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const aluno = document.getElementById('aluno').value;
+                const data = document.getElementById('data').value; // Captura a data do campo de entrada
+
+                if (!aluno || !data) {
+                    alert('Por favor, preencha todos os campos.');
+                    return;
+                }
+
+                const aulasAgendadas = JSON.parse(localStorage.getItem('aulasAgendadas')) || [];
+
+                if (editIndex === -1) {
+                    aulasAgendadas.push({ title: aluno, start: data });
+                } else {
+                    aulasAgendadas[editIndex] = { title: aluno, start: data };
+                    editIndex = -1;
+                }
+                
+                localStorage.setItem('aulasAgendadas', JSON.stringify(aulasAgendadas));
+                calendar.addEvent({ title: aluno, start: data });
+                exibirAulasAgendadas();
+
+                alert('Aula agendada com sucesso!');
+                agendamentoAulaForm.reset();
+            });
+
+            function exibirAulasAgendadas() {
+                const aulasAgendadas = JSON.parse(localStorage.getItem('aulasAgendadas')) || [];
+                aulasAgendadasDiv.innerHTML = '<h2>Aulas Agendadas</h2>';
+                
+                aulasAgendadas.forEach((aula, index) => {
+                    const aulaItem = document.createElement('div');
+                    aulaItem.className = 'aula-item';
+                    aulaItem.innerHTML = `Data: ${aula.start}, Aluno: ${aula.title}`;
+                    
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Editar';
+                    editButton.addEventListener('click', function() {
+                        document.getElementById('data').value = aula.start;
+                        document.getElementById('aluno').value = aula.title;
+                        editIndex = index;
+                    });
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Excluir';
+                    deleteButton.addEventListener('click', function() {
+                        aulasAgendadas.splice(index, 1);
+                        localStorage.setItem('aulasAgendadas', JSON.stringify(aulasAgendadas));
+                        exibirAulasAgendadas();
+                    });
+
+                    aulaItem.appendChild(editButton);
+                    aulaItem.appendChild(deleteButton);
+                    aulasAgendadasDiv.appendChild(aulaItem);
+                });
+            }
+
+            exibirAulasAgendadas();
+            calendar.render();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Mensalidades</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFC371, #FF5F6D); /* Fundo com gradiente */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .navbar {
+            width: 100%;
+            background-color: #8B4513;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #FFF;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #6B3B08;
+        }
+        .container {
+            background-color: #8B4513; /* Cor de fundo marrom */
+            padding: 30px; /* Aumenta o padding para mais espaço */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 80%; /* Aumenta a largura do container */
+            margin: 20px auto;
+            text-align: center; /* Centraliza o texto */
+        }
+        h1 {
+            color: #FFF; /* Texto branco */
+            margin-bottom: 20px;
+        }
+        .mensalidades {
+            margin-top: 20px;
+            background-color: #FFF;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .mensalidade-item {
+            background-color: #D2691E;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .mensalidade-item button {
+            padding: 5px 10px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .mensalidade-item .pago-button {
+            background-color: #008000; /* Verde */
+        }
+        .mensalidade-item .pago-button:hover {
+            background-color: #006400;
+        }
+        .mensalidade-item .cobrar-button {
+            background-color: #FF0000; /* Vermelho */
+        }
+        .mensalidade-item .cobrar-button:hover {
+            background-color: #B22222;
+        }
+        .mensalidade-item.pago {
+            background-color: #32CD32; /* Verde claro */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="inicio.html">Início</a>
+        <a href="cadastro.html">Cadastro de Aluno</a>
+        <a href="agendamento.html">Agendamento de Aulas</a>
+        <a href="mensalidade.html">Gestão de Mensalidades</a>
+    </div>
+    <div class="container">
+        <h1>Gestão de Mensalidades</h1>
+        <div class="mensalidades" id="mensalidades">
+            <h2>Alunos Cadastrados</h2>
+            <!-- Alunos cadastrados e suas mensalidades serão listados aqui -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mensalidadesDiv = document.getElementById('mensalidades');
+
+            function exibirMensalidades() {
+                const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+                mensalidadesDiv.innerHTML = '<h2>Alunos Cadastrados</h2>';
+
+                alunos.forEach((aluno, index) => {
+                    const mensalidadeItem = document.createElement('div');
+                    mensalidadeItem.className = 'mensalidade-item';
+                    mensalidadeItem.innerHTML = `Nome: ${aluno.nome}, Mensalidade: ${aluno.mensalidade}`;
+                    
+                    const pagoButton = document.createElement('button');
+                    pagoButton.textContent = 'Pago';
+                    pagoButton.className = 'pago-button';
+                    pagoButton.addEventListener('click', function() {
+                        alert(`Mensalidade de ${aluno.nome} foi marcada como paga.`);
+                        mensalidadeItem.classList.add('pago');
+                    });
+
+                    const cobrarButton = document.createElement('button');
+                    cobrarButton.textContent = 'Cobrar';
+                    cobrarButton.className = 'cobrar-button';
+                    cobrarButton.addEventListener('click', function() {
+                        alert(`Cobrança enviada para ${aluno.nome}.`);
+                    });
+
+                    mensalidadeItem.appendChild(pagoButton);
+                    mensalidadeItem.appendChild(cobrarButton);
+                    mensalidadesDiv.appendChild(mensalidadeItem);
+                });
+            }
+
+            exibirMensalidades();
+        });
+    </script>
+</body>
+</html>

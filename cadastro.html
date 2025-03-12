@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Aluno</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFC371, #FF5F6D); /* Fundo com gradiente */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .navbar {
+            width: 100%;
+            background-color: #8B4513;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: #FFF;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #6B3B08;
+        }
+        .container {
+            background-color: #8B4513; /* Cor de fundo marrom */
+            padding: 30px; /* Aumenta o padding para mais espaço */
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 80%; /* Aumenta a largura do container */
+            margin: 20px auto;
+            text-align: center; /* Centraliza o texto */
+        }
+        h1 {
+            color: #FFF; /* Texto branco */
+            margin-bottom: 20px;
+        }
+        label {
+            color: #FFF; /* Texto branco */
+            display: block;
+            margin-bottom: 5px;
+            text-align: left; /* Alinha o texto à esquerda */
+        }
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 90%; /* Diminui a largura dos campos de entrada */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            width: 90%; /* Mantém o botão da mesma largura dos campos de entrada */
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4B3B0A;
+            color: #FFF;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #6B4F1A;
+        }
+        .alunos-cadastrados {
+            margin-top: 20px;
+            background-color: #FFF;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .aluno-item {
+            background-color: #D2691E;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .aluno-item button {
+            background-color: #8B0000;
+            padding: 5px 10px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .aluno-item button:hover {
+            background-color: #B22222;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="inicio.html">Início</a>
+        <a href="cadastro.html">Cadastro de Aluno</a>
+        <a href="agendamento.html">Agendamento de Aulas</a>
+        <a href="mensalidade.html">Gestão de Mensalidades</a>
+    </div>
+    <div class="container">
+        <h1>Cadastro de Aluno</h1>
+        <form id="cadastro-aluno">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="telefone">Telefone:</label>
+            <input type="text" id="telefone" name="telefone" required>
+
+            <label for="mensalidade">Mensalidade:</label>
+            <select id="mensalidade" name="mensalidade" required>
+                <option value="">Selecione uma mensalidade</option>
+                <option value="mensalidade1">Mensalidade 1</option>
+                <option value="mensalidade2">Mensalidade 2</option>
+                <option value="mensalidade3">Mensalidade 3</option>
+            </select>
+            
+            <button type="submit">Cadastrar</button>
+        </form>
+
+        <div class="alunos-cadastrados" id="alunos-cadastrados">
+            <h2>Alunos Cadastrados</h2>
+            <!-- Alunos cadastrados serão listados aqui -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cadastroAlunoForm = document.getElementById('cadastro-aluno');
+            const alunosCadastradosDiv = document.getElementById('alunos-cadastrados');
+            let editIndex = -1;
+
+            cadastroAlunoForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const nome = document.getElementById('nome').value;
+                const email = document.getElementById('email').value;
+                const telefone = document.getElementById('telefone').value;
+                const mensalidade = document.getElementById('mensalidade').value;
+
+                const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+
+                if (editIndex === -1) {
+                    alunos.push({ nome, email, telefone, mensalidade });
+                } else {
+                    alunos[editIndex] = { nome, email, telefone, mensalidade };
+                    editIndex = -1;
+                }
+                
+                localStorage.setItem('alunos', JSON.stringify(alunos));
+
+                exibirAlunosCadastrados();
+
+                alert('Aluno cadastrado com sucesso!');
+                cadastroAlunoForm.reset();
+            });
+
+            function exibirAlunosCadastrados() {
+                const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+                alunosCadastradosDiv.innerHTML = '<h2>Alunos Cadastrados</h2>';
+                
+                alunos.forEach((aluno, index) => {
+                    const alunoItem = document.createElement('div');
+                    alunoItem.className = 'aluno-item';
+                    alunoItem.innerHTML = `Nome: ${aluno.nome}, Email: ${aluno.email}, Telefone: ${aluno.telefone}, Mensalidade: ${aluno.mensalidade}`;
+                    
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Editar';
+                    editButton.addEventListener('click', function() {
+                        document.getElementById('nome').value = aluno.nome;
+                        document.getElementById('email').value = aluno.email;
+                        document.getElementById('telefone').value = aluno.telefone;
+                        document.getElementById('mensalidade').value = aluno.mensalidade;
+                        editIndex = index;
+                    });
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Excluir';
+                    deleteButton.addEventListener('click', function() {
+                        alunos.splice(index, 1);
+                        localStorage.setItem('alunos', JSON.stringify(alunos));
+                        exibirAlunosCadastrados();
+                    });
+
+                    alunoItem.appendChild(editButton);
+                    alunoItem.appendChild(deleteButton);
+                    alunosCadastradosDiv.appendChild(alunoItem);
+                });
+            }
+
+            exibirAlunosCadastrados();
+        });
+    </script>
+</body>
+</html>
